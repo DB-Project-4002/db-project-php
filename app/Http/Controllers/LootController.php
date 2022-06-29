@@ -19,7 +19,7 @@ class LootController extends Controller
     public function index(Request $request): JsonResponse
     {
         $userId = (int)$request->user_id;
-     
+
         $rawQuery = DB::raw("SELECT loots.name, loots.mythic_essence_price, loots.game_credit_price, loots.type, loot_ownerships.count
                                    FROM loots
                                    JOIN loot_ownerships
