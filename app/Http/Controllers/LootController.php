@@ -39,6 +39,13 @@ class LootController extends Controller
 
 
 
+    /**
+     * Store new loot or update the number of existing loots
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function store(Request $request)
     {
         try {
@@ -49,14 +56,14 @@ class LootController extends Controller
                 return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid Loot Name');
             }
 
-            $currentLootNameExisting = DB::selectOne("SELECT * FROM loot_ownerships
+            $currentUserLootNameExisting = DB::selectOne("SELECT * FROM loot_ownerships
                                                          WHERE loot_ownerships.account_id = {$userId}
                                                          AND loot_ownerships.loot_name = '{$lootName}' ");
 
-            if (is_null($currentLootNameExisting)) {
+            if (is_null($currentUserLootNameExisting)) {
                 DB::insert("INSERT INTO loot_ownerships (account_id, loot_name, count) VALUES ($userId, '$lootName', 1)");
             } else {
-                DB::update("UPDATE loot_ownerships SET count = ({$currentLootNameExisting->count} + 1) WHERE account_id = {$userId} AND loot_name = '{$lootName}' ");
+                DB::update("UPDATE loot_ownerships SET count = ({$currentUserLootNameExisting->count} + 1) WHERE account_id = {$userId} AND loot_name = '{$lootName}' ");
             }
 
             return $this->index($request);
