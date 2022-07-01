@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\WhiteHouse;
+use App\Traits\ModelViewableColumns;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 
 class LootController extends Controller
 {
+    use ModelViewableColumns;
+
+    /**
+     * @var array
+     */
+    protected array $viewableColumns = ['loot_ownerships.loot_name', 'loot_ownerships.count'];
+
+
 
     /**
      * List of loots for current user
@@ -25,7 +34,7 @@ class LootController extends Controller
         try {
             $userId = (int)$request->user_id;
 
-            $data = DB::select("SELECT loots.name, loot_ownerships.count
+            $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM loots
                                    JOIN loot_ownerships
                                    ON loots.name = loot_ownerships.loot_name
