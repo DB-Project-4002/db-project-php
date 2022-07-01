@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\WhiteHouse;
 use App\Traits\ModelViewableColumns;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -37,7 +38,7 @@ class MatchController extends Controller
 
 
     /**
-     * Get user match participations
+     * Get account match participations
      *
      * @param Request $request
      *
@@ -48,7 +49,11 @@ class MatchController extends Controller
         try {
             $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM match_participations
-                                   WHERE match_participations.account_id = {$request->user_id}");
+                                   WHERE match_participations.account_id = {$request->account_id}");
+
+            foreach ($data as $matchData){
+                $matchData->time = Carbon::parse($matchData->time)->timestamp;
+            }
 
             return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
         } catch (Exception $ex) {
@@ -59,7 +64,7 @@ class MatchController extends Controller
 
 
     /**
-     * Get specific user match participations
+     * Get specific account match participations
      *
      * @param Request $request
      *
@@ -68,14 +73,18 @@ class MatchController extends Controller
     public function show(Request $request): JsonResponse
     {
         try {
+            $matchDateTime = Carbon::createFromTimestamp($request->match_time)->toDateTimeString();
+
             $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM match_participations
-                                   WHERE match_participations.account_id = {$request->user_id}
-                                   AND match_participations.time = {$request->match_time}");
+                                   WHERE match_participations.account_id = {$request->account_id}
+                                   AND match_participations.time = '{$matchDateTime}'");
 
             if (empty($data)) {
                 return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid Match Time');
             }
+
+            $data[0]->time = $request->match_time;
 
             return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
         } catch (Exception $ex) {

@@ -19,13 +19,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('/', [StatusController::class, 'index']);
 
-Route::prefix('user/{user_id}/game')->middleware('token-auth')->name('user.game.')->group(function () {
+Route::prefix('account/{account_id}/game')->middleware('token-auth')->name('account.game.')->group(function () {
     Route::prefix('loots')->name('loots')->group(function () {
         Route::get('/', [LootController::class, 'index']);
         Route::post('{loot_name}', [LootController::class, 'store']);

@@ -34,7 +34,7 @@ class SeasonController extends Controller
         try {
             $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM seasons
-                                   WHERE seasons.account_id = {$request->user_id}");
+                                   WHERE seasons.account_id = {$request->account_id}");
 
             return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
         } catch (Exception $ex) {
@@ -54,7 +54,7 @@ class SeasonController extends Controller
         try {
             $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM seasons
-                                   WHERE seasons.account_id = {$request->user_id}
+                                   WHERE seasons.account_id = {$request->account_id}
                                    AND seasons.number = {$request->season_num}");
 
             if (empty($data)) {

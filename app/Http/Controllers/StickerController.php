@@ -21,7 +21,7 @@ class StickerController extends Controller
 
 
     /**
-     * List of stickers for current user
+     * List of stickers for current account
      *
      * @param Request $request
      *
@@ -34,7 +34,7 @@ class StickerController extends Controller
                                    FROM stickers
                                    JOIN sticker_ownerships
                                    ON stickers.name = sticker_ownerships.sticker_name
-                                   WHERE sticker_ownerships.account_id = {$request->user_id}");
+                                   WHERE sticker_ownerships.account_id = {$request->account_id}");
 
             return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
         } catch (Exception $ex) {
@@ -51,22 +51,22 @@ class StickerController extends Controller
      *
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         try {
-            $userId           = $request->user_id;
+            $accountId           = $request->account_id;
             $stickerName         = Route::current()->parameter('sticker_name');
             $isStickerNameExists = DB::selectOne("SELECT * FROM stickers WHERE stickers.name = '{$stickerName}' ");
             if (is_null($isStickerNameExists)) {
                 return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid Sticker Name');
             }
 
-            $currentUserStickerNameExisting = DB::selectOne("SELECT * FROM sticker_ownerships
-                                                         WHERE sticker_ownerships.account_id = {$userId}
+            $currentAccountStickerNameExisting = DB::selectOne("SELECT * FROM sticker_ownerships
+                                                         WHERE sticker_ownerships.account_id = {$accountId}
                                                          AND sticker_ownerships.sticker_name = '{$stickerName}' ");
 
-            if (is_null($currentUserStickerNameExisting)) {
-                DB::insert("INSERT INTO sticker_ownerships (account_id, sticker_name) VALUES ($userId, '$stickerName')");
+            if (is_null($currentAccountStickerNameExisting)) {
+                DB::insert("INSERT INTO sticker_ownerships (account_id, sticker_name) VALUES ($accountId, '$stickerName')");
             } else {
               return  WhiteHouse::generalResponse(Response::HTTP_INTERNAL_SERVER_ERROR, "Sticker {$stickerName} already exists");
             }

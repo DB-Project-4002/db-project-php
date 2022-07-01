@@ -25,17 +25,17 @@ class TokenAuthenticationMiddleware
      */
     public function handle(Request $request, Closure $next): Response|JsonResponse|RedirectResponse
     {
-        $userId = Route::current()->parameter('user_id');
-        $user   = DB::selectOne(DB::raw("SELECT * FROM `accounts` WHERE `id` = {$userId}"));
+        $accountId = Route::current()->parameter('account_id');
+        $account   = DB::selectOne(DB::raw("SELECT * FROM `accounts` WHERE `id` = {$accountId}"));
 
-        if (is_null($user)) {
+        if (is_null($account)) {
             return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid User');
         }
 
 
         $token   = request()->bearerToken();
         $payload = JWT::decode($token, new Key(config('app.token_secret_key'), 'HS256'));
-        if ((!property_exists($payload, 'user_id')) or ($payload->user_id != $userId)) {
+        if ((!property_exists($payload, 'account_id')) or ($payload->account_id != $accountId)) {
            return WhiteHouse::generalResponse(Response::HTTP_UNAUTHORIZED, 'Unauthenticated');
         }
         return $next($request);
