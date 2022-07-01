@@ -7,8 +7,11 @@ use Illuminate\Http\Response;
 
 class WhiteHouse
 {
+    public const SERVER_ERROR_MESSAGE = 'Oops! Something went wrong!';
 
-    public static function generalResponse(int $errorCode, string $data)
+
+
+    public static function generalResponse(int $errorCode, $data)
     {
         if (($errorCode >= Response::HTTP_OK) and ($errorCode < Response::HTTP_MULTIPLE_CHOICES)) {
             return self::generalSuccessResponse($errorCode, $data);
