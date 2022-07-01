@@ -12,12 +12,13 @@ class RouteServiceProvider extends ServiceProvider
 {
     /**
      * The path to the "home" route for your application.
-     *
      * Typically, users are redirected here after authentication.
      *
      * @var string
      */
     public const HOME = '/home';
+
+
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -28,15 +29,32 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
-        $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
-
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-        });
+        parent::boot();
     }
+
+
+
+    public function map()
+    {
+        $this->mapApiRoutes();
+    }
+
+
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * @return void
+     */
+    protected function mapApiRoutes()
+    {
+        Route::domain(env('API_APP_URL'))
+             ->middleware('api')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/api.php'));
+    }
+
+
 
     /**
      * Configure the rate limiters for the application.
