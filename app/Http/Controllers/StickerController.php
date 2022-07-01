@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\WhiteHouse;
+use App\Traits\ModelViewableColumns;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,6 +12,13 @@ use Illuminate\Support\Facades\Route;
 
 class StickerController extends Controller
 {
+    use ModelViewableColumns;
+
+    /**
+     * @var array
+     */
+    protected array $viewableColumns = ['stickers.name'];
+
 
     /**
      * List of stickers for current user
@@ -22,7 +30,7 @@ class StickerController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $data = DB::select("SELECT stickers.name
+            $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM stickers
                                    JOIN sticker_ownerships
                                    ON stickers.name = sticker_ownerships.sticker_name
