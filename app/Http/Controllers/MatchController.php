@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\WhiteHouse;
 use App\Traits\ModelViewableColumns;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -35,6 +36,29 @@ class MatchController extends Controller
         'match_participations.item_6',
     ];
 
+
+
+    public function list(Request $request)
+    {
+        //try {
+            if (is_null($request->time)){
+                return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid parameter time');
+            }
+
+            $matchDateTime = Carbon::createFromTimestamp($request->time)->toDateTimeString();
+            $data = DB::select("SELECT {$this->getViewableColumns()}
+                                   FROM match_participations
+                                   WHERE match_participations.time = '{$matchDateTime}'");
+
+            foreach ($data as $matchData){
+                $matchData->time = Carbon::parse($matchData->time)->timestamp;
+            }
+
+            return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
+        //} catch (Exception $ex) {
+        //    return WhiteHouse::generalResponse(Response::HTTP_INTERNAL_SERVER_ERROR, WhiteHouse::SERVER_ERROR_MESSAGE);
+        //}
+    }
 
 
     /**
