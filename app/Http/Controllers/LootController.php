@@ -22,6 +22,18 @@ class LootController extends Controller
 
 
 
+    public function list(Request $request)
+    {
+        try {
+            $data = DB::select("SELECT name, mythic_essence_price, game_credit_price, type FROM loots");
+
+            return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
+        } catch (Exception $ex) {
+            return WhiteHouse::generalResponse(Response::HTTP_INTERNAL_SERVER_ERROR, WhiteHouse::SERVER_ERROR_MESSAGE);
+        }
+    }
+
+
     /**
      * List of loots for current account
      *
