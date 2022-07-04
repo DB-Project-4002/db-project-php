@@ -76,7 +76,7 @@ class MatchController extends Controller
                                    WHERE match_participations.account_id = {$request->account_id}");
 
             foreach ($data as $matchData){
-                $matchData->time = Carbon::parse($matchData->time)->timestamp;
+                $matchData->time = (int)Carbon::parse($matchData->time)->timestamp;
             }
 
             return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
