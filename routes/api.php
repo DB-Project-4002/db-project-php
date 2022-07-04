@@ -21,6 +21,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StatusController::class, 'index']);
 
+Route::prefix('game')->name('game.')->group(function () {
+    Route::get('/loots', [LootController::class, 'list']);
+    Route::get('/stickers', [StickerController::class, 'list']);
+    Route::get('/matches/{time}', [MatchController::class, 'list']);
+});
+
 Route::prefix('account/{account_id}/game')->middleware('token-auth')->name('account.game.')->group(function () {
     Route::prefix('loots')->name('loots')->group(function () {
         Route::get('/', [LootController::class, 'index']);
