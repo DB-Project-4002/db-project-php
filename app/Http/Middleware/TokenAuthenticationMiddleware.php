@@ -34,10 +34,15 @@ class TokenAuthenticationMiddleware
 
 
         $token   = request()->bearerToken();
+        if (is_null($token)){
+            return WhiteHouse::generalResponse(Response::HTTP_UNAUTHORIZED, 'Unauthenticated');
+        }
+
         $payload = JWT::decode($token, new Key(config('app.token_secret_key'), 'HS256'));
         if ((!property_exists($payload, 'account_id')) or ($payload->account_id != $accountId)) {
            return WhiteHouse::generalResponse(Response::HTTP_UNAUTHORIZED, 'Unauthenticated');
         }
+
         return $next($request);
     }
 }
