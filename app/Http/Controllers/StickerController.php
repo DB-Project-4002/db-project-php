@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\WhiteHouse;
 use App\Traits\ModelViewableColumns;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,6 +19,18 @@ class StickerController extends Controller
      * @var array
      */
     protected array $viewableColumns = ['stickers.name'];
+
+
+    public function list(Request $request)
+    {
+        try {
+            $data = DB::select("SELECT name, game_credit_price FROM stickers");
+
+            return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
+        } catch (Exception $ex) {
+            return WhiteHouse::generalResponse(Response::HTTP_INTERNAL_SERVER_ERROR, WhiteHouse::SERVER_ERROR_MESSAGE);
+        }
+    }
 
 
     /**
