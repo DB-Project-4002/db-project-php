@@ -39,7 +39,7 @@ class TokenAuthenticationMiddleware
         }
 
         $payload = JWT::decode($token, new Key(config('app.token_secret_key'), 'HS256'));
-        if ((!property_exists($payload, 'sub')) or ($payload->account_id != $accountId)) {
+        if ((!property_exists($payload, 'sub')) or ($payload->sub != $accountId)) {
            return WhiteHouse::generalResponse(Response::HTTP_UNAUTHORIZED, 'Unauthenticated');
         }
 
