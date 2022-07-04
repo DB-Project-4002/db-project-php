@@ -46,7 +46,7 @@ class MatchController extends Controller
             }
 
             $matchDateTime = Carbon::createFromTimestamp($request->time)->toDateTimeString();
-            $data = DB::select("SELECT {$this->getViewableColumns()}
+            $data = DB::select("SELECT {$this->getViewableColumns()},account_id
                                    FROM match_participations
                                    WHERE match_participations.time = '{$matchDateTime}'");
 
