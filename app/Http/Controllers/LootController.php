@@ -70,8 +70,12 @@ class LootController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            $lootName         = $request->loot_name;
+            if (is_null($lootName)){
+                return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Loot Name Required');
+            }
+
             $accountId           = $request->account_id;
-            $lootName         = Route::current()->parameter('loot_name');
             $isLootNameExists = DB::selectOne("SELECT * FROM loots WHERE loots.name = '{$lootName}' ");
             if (is_null($isLootNameExists)) {
                 return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid Loot Name');

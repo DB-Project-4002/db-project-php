@@ -67,8 +67,12 @@ class StickerController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            $stickerName         = $request->sticker_name;
+            if (is_null($stickerName)){
+                return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Sticker Name Required');
+            }
+
             $accountId           = $request->account_id;
-            $stickerName         = Route::current()->parameter('sticker_name');
             $isStickerNameExists = DB::selectOne("SELECT * FROM stickers WHERE stickers.name = '{$stickerName}' ");
             if (is_null($isStickerNameExists)) {
                 return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid Sticker Name');

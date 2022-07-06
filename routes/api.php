@@ -29,13 +29,13 @@ Route::prefix('game')->name('game.')->group(function () {
 
 Route::prefix('account/{account_id}/game')->middleware('token-auth')->name('account.game.')->group(function () {
     Route::prefix('loots')->name('loots')->group(function () {
-        Route::get('/', [LootController::class, 'index']);
-        Route::post('{loot_name}', [LootController::class, 'store']);
+        Route::get( '/', [LootController::class, 'index']);
+        Route::post('/', [LootController::class, 'store']);
     });
 
     Route::prefix('stickers')->name('stickers')->group(function () {
-        Route::get('/', [StickerController::class, 'index']);
-        Route::post('{sticker_name}', [StickerController::class, 'store']);
+        Route::get( '/', [StickerController::class, 'index']);
+        Route::post('/', [StickerController::class, 'store']);
     });
 
     Route::prefix('seasons')->name('seasons')->group(function () {
