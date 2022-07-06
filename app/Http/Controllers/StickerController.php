@@ -18,7 +18,7 @@ class StickerController extends Controller
     /**
      * @var array
      */
-    protected array $viewableColumns = ['stickers.name'];
+    protected array $viewableColumns = ['stickers.name as sticker_name'];
 
 
     public function list(Request $request)
