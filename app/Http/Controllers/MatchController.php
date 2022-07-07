@@ -19,10 +19,13 @@ class MatchController extends Controller
      * @var string[]
      */
     protected array $viewableColumns = [
+        'match_participations.account_id',
+        'accounts.name',
+        'accounts.tag',
         'match_participations.time',
         'match_participations.grade',
         'match_participations.kills',
-        'match_participations.death',
+        'match_participations.deaths',
         'match_participations.assists',
         'match_participations.cs',
         'match_participations.ds',
@@ -40,14 +43,15 @@ class MatchController extends Controller
 
     public function list(Request $request)
     {
-        //try {
+        try {
             if (is_null($request->time)){
                 return WhiteHouse::generalResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid parameter time');
             }
 
             $matchDateTime = Carbon::createFromTimestamp($request->time)->toDateTimeString();
-            $data = DB::select("SELECT {$this->getViewableColumns()},account_id
+            $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM match_participations
+                                   JOIN accounts ON accounts.id = match_participations.account_id
                                    WHERE match_participations.time = '{$matchDateTime}'");
 
             foreach ($data as $matchData){
@@ -55,9 +59,9 @@ class MatchController extends Controller
             }
 
             return WhiteHouse::generalResponse(Response::HTTP_OK, $data);
-        //} catch (Exception $ex) {
-        //    return WhiteHouse::generalResponse(Response::HTTP_INTERNAL_SERVER_ERROR, WhiteHouse::SERVER_ERROR_MESSAGE);
-        //}
+        } catch (Exception $ex) {
+            return WhiteHouse::generalResponse(Response::HTTP_INTERNAL_SERVER_ERROR, WhiteHouse::SERVER_ERROR_MESSAGE);
+        }
     }
 
 
@@ -73,6 +77,7 @@ class MatchController extends Controller
         try {
             $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM match_participations
+                                   JOIN accounts ON accounts.id = match_participations.account_id
                                    WHERE match_participations.account_id = {$request->account_id}");
 
             foreach ($data as $matchData){
@@ -101,6 +106,7 @@ class MatchController extends Controller
 
             $data = DB::select("SELECT {$this->getViewableColumns()}
                                    FROM match_participations
+                                   JOIN accounts ON accounts.id = match_participations.account_id
                                    WHERE match_participations.account_id = {$request->account_id}
                                    AND match_participations.time = '{$matchDateTime}'");
 
