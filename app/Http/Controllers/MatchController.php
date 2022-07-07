@@ -23,6 +23,7 @@ class MatchController extends Controller
         'accounts.name',
         'accounts.tag',
         'match_participations.team',
+        'match_participations.champion_name',
         'match_participations.time',
         'match_participations.grade',
         'match_participations.kills',
